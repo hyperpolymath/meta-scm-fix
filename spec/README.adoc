@@ -1,98 +1,131 @@
-= META Format Specification Documents
+= .scm Format Family - Specification Documents
 :toc:
+:icons: font
 
 == Overview
 
-This directory contains the formal specification infrastructure for the META
-(Machine-readable Engineering and Technical Architecture) format, prepared
-for submission to standards bodies including IETF and IANA.
+This directory contains the formal specification infrastructure for the **.scm
+Format Family**, a suite of Scheme S-expression-based data formats for software
+engineering workflows.
+
+=== Format Family Members
+
+[cols="1,2,2"]
+|===
+|Format |Purpose |Media Type
+
+|**META.scm**
+|Project governance, ADRs, development practices
+|`application/meta+scheme`
+
+|**STATE.scm**
+|AI conversation checkpoint/restore
+|`application/state+scheme`
+|===
+
+Both formats share common S-expression syntax while serving complementary purposes.
 
 == Document Index
 
-=== Core Specification
+=== Format Family (Shared)
+
+link:SCM-FORMAT-FAMILY.adoc[SCM-FORMAT-FAMILY.adoc]::
+  Umbrella specification describing the .scm format family, relationships
+  between formats, and cross-format integration.
+
+link:UNIFIED-STANDARDS-STRATEGY.adoc[UNIFIED-STANDARDS-STRATEGY.adoc]::
+  Coordinated standards track strategy for the entire format family.
+
+=== Shared Infrastructure
+
+link:shared/s-expression.abnf[shared/s-expression.abnf]::
+  Common ABNF grammar for S-expression primitives shared by all formats.
+  Includes symbols, strings, numbers, comments, dates, and URIs.
+
+link:shared/scm-common.schema.json[shared/scm-common.schema.json]::
+  Shared JSON Schema definitions reusable across format-specific schemas.
+  Includes common types like dates, versions, identifiers, and references.
+
+=== META.scm Specification
 
 link:META-FORMAT-SPEC.adoc[META-FORMAT-SPEC.adoc]::
-  The complete format specification in IETF Internet-Draft style. Defines
+  Complete META format specification in IETF Internet-Draft style. Defines
   all sections, data types, parsing requirements, and security considerations.
 
-=== Grammar
-
 link:abnf/meta.abnf[abnf/meta.abnf]::
-  Formal ABNF (Augmented Backus-Naur Form) grammar per RFC 5234. Defines
-  the complete syntax including module declarations, core sections, and
-  S-expression primitives.
-
-=== Schema
+  META-specific ABNF grammar (imports shared primitives). Defines module
+  declarations, ADR structure, and practice sections.
 
 link:schema/meta.schema.json[schema/meta.schema.json]::
-  JSON Schema (Draft 2020-12) for validating META files in JSON binding
-  format. Useful for tooling and IDE integration.
+  JSON Schema (Draft 2020-12) for validating META files in JSON binding format.
 
 === Standards Track
 
 link:STANDARDS-TRACK.adoc[STANDARDS-TRACK.adoc]::
-  Comprehensive analysis of potential standards bodies (IETF, IANA, ISO,
-  W3C, SPDX) and phased roadmap to formal standardization.
+  META.scm-specific standards analysis and roadmap.
+
+link:UNIFIED-STANDARDS-STRATEGY.adoc[UNIFIED-STANDARDS-STRATEGY.adoc]::
+  Coordinated strategy for the entire .scm format family.
 
 === Policy Documents
 
 link:VERSION-POLICY.adoc[VERSION-POLICY.adoc]::
-  Version evolution policy following Semantic Versioning 2.0.0. Defines
-  compatibility guarantees, deprecation process, and governance.
+  Version evolution policy following Semantic Versioning 2.0.0.
 
 link:IANA-MEDIA-TYPE.adoc[IANA-MEDIA-TYPE.adoc]::
-  Complete IANA media type registration template for `application/meta+scheme`,
-  ready for submission per RFC 6838.
+  IANA media type registration template for `application/meta+scheme`.
 
 == Quick Start
 
-To read the specification:
+=== Reading the Specifications
 
-1. Start with link:META-FORMAT-SPEC.adoc[META-FORMAT-SPEC.adoc] for the complete format definition
-2. Review link:../examples/[examples/] for practical usage
-3. Use link:schema/meta.schema.json[JSON Schema] for validation tooling
+1. **Format Family Overview**: Start with link:SCM-FORMAT-FAMILY.adoc[SCM-FORMAT-FAMILY.adoc]
+2. **META.scm Details**: Read link:META-FORMAT-SPEC.adoc[META-FORMAT-SPEC.adoc]
+3. **Examples**: Review link:../examples/[examples/] for practical usage
+4. **Validation**: Use link:schema/meta.schema.json[JSON Schema] for tooling
 
-To contribute to standardization:
+=== Implementing a Parser
 
-1. Review link:STANDARDS-TRACK.adoc[STANDARDS-TRACK.adoc] for the roadmap
+1. Implement shared S-expression parser from link:shared/s-expression.abnf[shared/s-expression.abnf]
+2. Add META-specific validation from link:abnf/meta.abnf[abnf/meta.abnf]
+3. Use JSON Schema for JSON binding validation
+
+=== Contributing to Standardization
+
+1. Review link:UNIFIED-STANDARDS-STRATEGY.adoc[UNIFIED-STANDARDS-STRATEGY.adoc] for the roadmap
 2. Check link:VERSION-POLICY.adoc[VERSION-POLICY.adoc] for change procedures
 3. Open issues or PRs on the GitHub repository
 
-== Format Summary
+== Format Relationships
 
-META files use Scheme S-expression syntax to encode:
+----
+                    ┌─────────────────────────────────────┐
+                    │     .scm Format Family              │
+                    │   shared/s-expression.abnf          │
+                    │   shared/scm-common.schema.json     │
+                    └─────────────────────────────────────┘
+                                    │
+                    ┌───────────────┴───────────────┐
+                    │                               │
+            ┌───────▼───────┐               ┌──────▼──────┐
+            │   META.scm    │               │  STATE.scm  │
+            │               │               │             │
+            │ • ADRs        │               │ • Sessions  │
+            │ • Practices   │◄─────────────►│ • Context   │
+            │ • Rationale   │  References   │ • Progress  │
+            └───────────────┘               └─────────────┘
+----
 
-* **Architecture Decisions** (`architecture-decisions`) - ADRs with status, context, decision, consequences
-* **Development Practices** (`development-practices`) - Code style, security, testing, versioning policies
-* **Design Rationale** (`design-rationale`) - Narrative explanations of key decisions
-
-=== Example
+STATE.scm files can reference META.scm for project context:
 
 [source,scheme]
 ----
-;; SPDX-License-Identifier: MIT
-;; SPDX-FileCopyrightText: 2025 Example Author
-
-(define-module (my-project meta)
-  #:export (architecture-decisions development-practices design-rationale))
-
-(define architecture-decisions
-  '((adr-001
-     (title . "Use PostgreSQL")
-     (status . "accepted")
-     (date . "2025-01-15")
-     (context . "Need reliable relational database")
-     (decision . "Use PostgreSQL 16+")
-     (consequences . ("Strong consistency" "Excellent tooling")))))
-
-(define development-practices
-  '((testing
-     (framework . "pytest")
-     (coverage-minimum . 80))))
-
-(define design-rationale
-  '((why-postgresql
-     "PostgreSQL provides the best balance of features and reliability.")))
+;; In STATE.scm
+(define projects
+  '((name . "my-project")
+    (meta-ref . "META.scm")           ; Reference to META.scm
+    (active-adrs . (adr-001 adr-003)) ; Currently relevant decisions
+    (relevant-practices . (security testing))))
 ----
 
 == Standards Track Summary
@@ -102,11 +135,11 @@ META files use Scheme S-expression syntax to encode:
 |Body |Role |Status
 
 |IETF
-|Informational RFC (primary specification)
+|RFC series (core + META + STATE)
 |Phase 1: Community Spec
 
 |IANA
-|Media type registration (`application/meta+scheme`)
+|Media types (`application/*+scheme`)
 |Pending Phase 2
 
 |SPDX
@@ -117,6 +150,26 @@ META files use Scheme S-expression syntax to encode:
 |Formal international standard
 |Future consideration (Year 5+)
 |===
+
+== Directory Structure
+
+----
+spec/
+├── README.adoc                      # This file
+├── SCM-FORMAT-FAMILY.adoc           # Format family overview
+├── UNIFIED-STANDARDS-STRATEGY.adoc  # Coordinated standards approach
+├── META-FORMAT-SPEC.adoc            # META.scm specification
+├── STANDARDS-TRACK.adoc             # META-specific standards roadmap
+├── VERSION-POLICY.adoc              # Version evolution policy
+├── IANA-MEDIA-TYPE.adoc             # Media type registration
+├── abnf/
+│   └── meta.abnf                    # META-specific grammar
+├── schema/
+│   └── meta.schema.json             # META JSON Schema
+└── shared/
+    ├── s-expression.abnf            # Shared S-expression grammar
+    └── scm-common.schema.json       # Shared JSON Schema definitions
+----
 
 == Contributing
 
