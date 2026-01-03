@@ -12,21 +12,64 @@ software engineering workflows.
 
 == The .scm Format Family
 
-[cols="1,2,2"]
+This repository is part of the **SCM Format Family** — 7 Scheme S-expression formats for software engineering workflows. All specification repos are satellites of https://github.com/hyperpolymath/standards[hyperpolymath/standards].
+
+[cols="1,1,2,1", options="header"]
 |===
-|Format |Purpose |Use Case
+|Format |Tier |Purpose |Specification
 
-|**META.scm**
-|Project governance and architecture documentation
-|ADRs, development practices, design rationale
+|`META.scm`
+|Primary
+|Architecture decisions (ADRs), development practices
+|**This repo**
 
-|**STATE.scm**
-|AI conversation checkpoint and restore
-|Session persistence, context continuity
+|`STATE.scm`
+|Primary
+|Project state, phase, milestones, session history
+|Companion (this repo)
+
+|`ECOSYSTEM.scm`
+|Primary
+|Ecosystem positioning, related projects
+|Companion (this repo)
+
+|`PLAYBOOK.scm`
+|Execution
+|Executable plans, procedures, alerts
+|https://github.com/hyperpolymath/playbook-scm[playbook-scm]
+
+|`AGENTIC.scm`
+|Execution
+|AI agent operational gating, entropy budgets
+|https://github.com/hyperpolymath/agentic-scm[agentic-scm]
+
+|`NEUROSYM.scm`
+|Execution
+|Symbolic semantics, proof obligations
+|https://github.com/hyperpolymath/neurosym-scm[neurosym-scm]
+
+|`ANCHOR.scm`
+|Intervention
+|Project recalibration/realignment
+|https://github.com/hyperpolymath/anchor.scm[anchor.scm]
 |===
 
-Both formats share common S-expression syntax, enabling unified tooling while
-serving complementary purposes.
+=== Execution Pipeline
+
+All implementations MUST respect this ordering:
+
+[source]
+----
+1. META validation      ← Constitutional authority check
+2. AGENTIC gating       ← Operational safety
+3. NEUROSYM semantics   ← Proof obligations
+4. PLAYBOOK derivation  ← Build executable plan
+5. Execution
+6. ECOSYSTEM check      ← Integrity verification
+7. STATE update         ← Record outcome
+
+INTERVENTION: ANCHOR.scm can override any level
+----
 
 == What is META.scm?
 
@@ -267,9 +310,22 @@ See link:CONTRIBUTING.md[CONTRIBUTING.md] for contribution guidelines.
 
 MIT License. Copyright (c) 2025 Jonathan D.A. Jewell.
 
-== Related Work
+== Related Projects
+
+**Standards Hub:**
+
+* https://github.com/hyperpolymath/standards[standards] — Organization standards hub
+* https://github.com/hyperpolymath/standards/blob/main/SATELLITES.scm[SATELLITES.scm] — Machine-readable satellite registry
+
+**SCM Format Family (Siblings):**
+
+* https://github.com/hyperpolymath/playbook-scm[playbook-scm] — PLAYBOOK.scm (execution tier)
+* https://github.com/hyperpolymath/agentic-scm[agentic-scm] — AGENTIC.scm (execution tier)
+* https://github.com/hyperpolymath/neurosym-scm[neurosym-scm] — NEUROSYM.scm (execution tier)
+* https://github.com/hyperpolymath/anchor.scm[anchor.scm] — ANCHOR.scm (intervention tier)
+
+**Related Standards:**
 
 * https://adr.github.io/madr/[MADR] - Markdown ADR format
 * https://spdx.dev/[SPDX] - Software Package Data Exchange
 * https://www.iso.org/standard/81870.html[ISO/IEC 5962:2021] - SPDX as ISO standard
-* **STATE.scm** - AI conversation checkpoint format (companion specification)
